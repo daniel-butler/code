@@ -14,16 +14,16 @@ class AbstractRepository(abc.ABC):
 
 
 
-class SqlAlchemyRepository(AbstractRepository):
-
-    def __init__(self, session):
-        self.session = session
+class DjangoRepository(AbstractRepository):
+    def __init__(self):
+        from djangoproject.alloc import models
+        self.django_models = models
 
     def add(self, batch):
-        self.session.add(batch)
+        self.django_models.Batch.from_domain(batch).save()
 
     def get(self, reference):
-        return self.session.query(model.Batch).filter_by(reference=reference).one()
+        return self.django_models.Batch.objects.filter(
+            reference=reference
+        ).first().to_domain()
 
-    def list(self):
-        return self.session.query(model.Batch).all()
