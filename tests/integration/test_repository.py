@@ -4,7 +4,7 @@ import pytest
 from allocation import model, repository
 
 @pytest.fixture
-def django_models(django_db_setup):
+def django_models():
     from djangoproject.alloc import models
     return models
 
