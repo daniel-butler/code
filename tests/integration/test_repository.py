@@ -3,11 +3,6 @@ from datetime import date
 import pytest
 from allocation import model, repository
 
-@pytest.fixture
-def django_models():
-    from djangoproject.alloc import models
-    return models
-
 @pytest.mark.django_db
 def test_repository_can_save_a_batch(django_models):
     batch = model.Batch("batch1", "RUSTY-SOAPDISH", 100, eta=date(2011, 12, 25))

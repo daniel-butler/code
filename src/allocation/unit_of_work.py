@@ -1,16 +1,11 @@
 # pylint: disable=attribute-defined-outside-init
 import abc
-from typing import Callable
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm.session import Session
+from django.db import transaction
 
-from allocation import config
-from allocation import repository
+from allocation import config, repository
 
 
 class AbstractUnitOfWork(abc.ABC):
-
     def __enter__(self):
         return self
 
@@ -34,26 +29,21 @@ class AbstractUnitOfWork(abc.ABC):
 
 
 
-DEFAULT_SESSION_FACTORY = sessionmaker(bind=create_engine(
-    config.get_postgres_uri(),
-))
-
-class SqlAlchemyUnitOfWork(AbstractUnitOfWork):
-
-    def __init__(self, session_factory=DEFAULT_SESSION_FACTORY):
-        self.session_factory = session_factory
+class DjangoUnitOfWork(AbstractUnitOfWork):
 
     def __enter__(self):
-        self.session = self.session_factory()  # type: Session
-        self.init_repositories(repository.SqlAlchemyRepository(self.session))
+        self.init_repositories(repository.DjangoRepository())
+        transaction.set_autocommit(False)
         return super().__enter__()
 
     def __exit__(self, *args):
         super().__exit__(*args)
-        self.session.close()
+        transaction.set_autocommit(True)
 
     def commit(self):
-        self.session.commit()
+        for batch in self.batches.seen:
+            self.batches.update(batch)
+        transaction.commit()
 
     def rollback(self):
-        self.session.rollback()
+        transaction.rollback()
