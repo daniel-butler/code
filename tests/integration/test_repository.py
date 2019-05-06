@@ -2,9 +2,10 @@
 from datetime import date
 import pytest
 from allocation import model, repository
+from djangoproject.alloc import models as django_models
 
 @pytest.mark.django_db
-def test_repository_can_save_a_batch(django_models):
+def test_repository_can_save_a_batch():
     batch = model.Batch("batch1", "RUSTY-SOAPDISH", 100, eta=date(2011, 12, 25))
 
     repo = repository.DjangoRepository()
@@ -18,15 +19,15 @@ def test_repository_can_save_a_batch(django_models):
 
 
 @pytest.mark.django_db
-def test_repository_can_retrieve_a_batch_with_allocations(django_models):
+def test_repository_can_retrieve_a_batch_with_allocations():
     sku = "PONY-STATUE"
-    d_line = django_models.OrderLine.objects.create(orderid='order1', sku=sku, qty=12)
-    d_batch1 = django_models.Batch.objects.create(reference='batch1', sku=sku, qty=100, eta=None)
-    d_batch2 = django_models.Batch.objects.create(reference='batch2', sku=sku, qty=100, eta=None)
+    d_line = django_models.OrderLine.objects.create(orderid="order1", sku=sku, qty=12)
+    d_batch1 = django_models.Batch.objects.create(reference="batch1", sku=sku, qty=100, eta=None)
+    d_batch2 = django_models.Batch.objects.create(reference="batch2", sku=sku, qty=100, eta=None)
     django_models.Allocation.objects.create(line=d_line, batch=d_batch1)
 
     repo = repository.DjangoRepository()
-    retrieved = repo.get('batch1')
+    retrieved = repo.get("batch1")
 
     expected = model.Batch("batch1", sku, 100, eta=None)
     assert retrieved == expected  # Batch.__eq__ only compares reference
