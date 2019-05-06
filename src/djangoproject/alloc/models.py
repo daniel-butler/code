@@ -16,11 +16,11 @@ class Batch(models.Model):
         b.sku = batch.sku
         b.qty = batch._purchased_quantity
         b.eta = batch.eta
+        b.save()
         b.allocation_set.set(
             Allocation.from_domain(l, b)
             for l in batch._allocations
         )
-        b.save()
 
     def to_domain(self) -> domain_model.Batch:
         b = domain_model.Batch(

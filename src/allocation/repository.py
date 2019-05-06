@@ -45,3 +45,6 @@ class DjangoRepository(AbstractRepository):
         self.seen.add(batch)
         return batch
 
+    def list(self):
+        return [b.to_domain() for b in self.django_models.Batch.objects.all()]
+
