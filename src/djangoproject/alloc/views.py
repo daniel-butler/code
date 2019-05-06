@@ -38,4 +38,4 @@ def allocate(request):
     except (model.OutOfStock, services.InvalidSku) as e:
         return JsonResponse({'message': str(e)}, status=400)
 
-    return JsonResponse({'batchref': batchref}, status=400)
+    return JsonResponse({'batchref': batchref}, status=201)
