@@ -8,9 +8,7 @@ from djangoproject.alloc import models as django_models
 def insert_batch(ref, sku, qty, eta):
     django_models.Batch.objects.create(reference=ref, sku=sku, qty=qty, eta=eta)
 
-
 def get_allocated_batch_ref(orderid, sku):
-    print(django_models.Allocation.objects.all())
     return django_models.Allocation.objects.get(
         line__orderid=orderid, line__sku=sku
     ).batch.reference

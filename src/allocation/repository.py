@@ -1,8 +1,8 @@
 from typing import Set
 import abc
-from allocation import model
 
 from djangoproject.alloc import models as django_models
+from allocation import model
 
 class AbstractRepository(abc.ABC):
 
@@ -27,9 +27,6 @@ class AbstractRepository(abc.ABC):
 
 class DjangoRepository(AbstractRepository):
 
-    def __init__(self):
-        super().__init__()
-
     def add(self, batch):
         super().add(batch)
         self.update(batch)
@@ -38,11 +35,9 @@ class DjangoRepository(AbstractRepository):
         django_models.Batch.update_from_domain(batch)
 
     def _get(self, reference):
-        batch = django_models.Batch.objects.filter(
+        return django_models.Batch.objects.filter(
             reference=reference
         ).first().to_domain()
-        self.seen.add(batch)
-        return batch
 
     def list(self):
         return [b.to_domain() for b in django_models.Batch.objects.all()]
