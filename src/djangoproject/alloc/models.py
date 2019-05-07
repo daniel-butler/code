@@ -27,7 +27,7 @@ class Batch(models.Model):
             ref=self.reference, sku=self.sku, qty=self.qty, eta=self.eta
         )
         b._allocations = set(
-            a.line.to_domain() 
+            a.line.to_domain()
             for a in self.allocation_set.all()
         )
         return b
