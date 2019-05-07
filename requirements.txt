@@ -5,6 +5,7 @@ django
 # tests
 pytest
 pytest-icdiff
+pytest-django
 mypy
 requests
 
