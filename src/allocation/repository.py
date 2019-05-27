@@ -1,15 +1,25 @@
+from typing import Set
 import abc
-from allocation import model
+from allocation import model, orm
 
 
 class AbstractRepository(abc.ABC):
 
-    @abc.abstractmethod
-    def add(self, batch):
-        raise NotImplementedError
+    def __init__(self):
+        self.seen = set()  # type: Set[model.Batch]
 
     @abc.abstractmethod
+    def add(self, batch):
+        self.seen.add(batch)
+
     def get(self, reference):
+        p = self._get(reference)
+        if p:
+            self.seen.add(p)
+        return p
+
+    @abc.abstractmethod
+    def _get(self, sku):
         raise NotImplementedError
 
 
