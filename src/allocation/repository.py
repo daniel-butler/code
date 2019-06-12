@@ -1,3 +1,4 @@
+# pylint: disable=no-member, no-self-use
 from typing import Set
 import abc
 
@@ -20,7 +21,7 @@ class AbstractRepository(abc.ABC):
         return p
 
     @abc.abstractmethod
-    def _get(self, sku):
+    def _get(self, reference):
         raise NotImplementedError
 
 

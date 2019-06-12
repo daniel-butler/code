@@ -6,11 +6,13 @@ class FakeRepository(repository.AbstractRepository):
 
     def __init__(self, batches):
         self._batches = set(batches)
+        super().__init__()
 
     def add(self, batch):
         self._batches.add(batch)
+        super().add(batch)
 
-    def get(self, reference):
+    def _get(self, reference):
         return next(b for b in self._batches if b.reference == reference)
 
     def list(self):
