@@ -14,13 +14,15 @@ class AbstractRepository(abc.ABC):
 
 
 
-class SqlAlchemyRepository(AbstractRepository):
+class SqlRepository(AbstractRepository):
 
     def __init__(self, session):
         self.session = session
 
     def add(self, batch):
-        pass
+        # self.session.execute('INSERT INTO ??
+        ...
 
     def get(self, reference) -> model.Batch:
-        pass
+        # self.session.execute('SELECT ??
+        ...
