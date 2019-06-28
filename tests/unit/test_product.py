@@ -50,6 +50,7 @@ def test_raises_out_of_stock_exception_if_cannot_allocate():
         product.allocate(different_sku_line)
 
 
+@pytest.mark.skip
 def test_increments_version_number():
     line = OrderLine('oref', "SCANDI-PEN", 10)
     product = Product(sku="SCANDI-PEN", batches=[Batch('b1', "SCANDI-PEN", 100, eta=None)])

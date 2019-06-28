@@ -24,12 +24,12 @@ class AbstractUnitOfWork(abc.ABC):
     def rollback(self):
         raise NotImplementedError
 
-    def init_repositories(self, products: repository.AbstractRepository):
-        self._products = products
+    def init_repositories(self, batches: repository.AbstractRepository):
+        self._batches = batches
 
     @property
-    def products(self) -> repository.AbstractRepository:
-        return self._products
+    def batches(self) -> repository.AbstractRepository:
+        return self._batches
 
 
 
