@@ -52,7 +52,7 @@ class FakeBus(messagebus.MessageBus):
         uow.set_bus(self)
 
 
-class FakeNotifications(notifications.Notifications):
+class FakeNotifications(notifications.AbstractNotifications):
 
     def __init__(self):
         self.sent = defaultdict(list)  # type: Dict[str, str]
