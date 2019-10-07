@@ -1,15 +1,17 @@
 # pylint: disable=attribute-defined-outside-init
 from __future__ import annotations
 import abc
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
+from allocation import repository
 
 from allocation import config, repository
 if TYPE_CHECKING:
     from allocation import messagebus
 
+SessionFactory = Callable[..., Session]
 
 
 class AbstractUnitOfWork(abc.ABC):
@@ -50,18 +52,13 @@ class AbstractUnitOfWork(abc.ABC):
 
 
 
-DEFAULT_SESSION_FACTORY = sessionmaker(bind=create_engine(
-    config.get_postgres_uri(),
-    isolation_level="SERIALIZABLE",
-))
-
 class SqlAlchemyUnitOfWork(AbstractUnitOfWork):
 
-    def __init__(self, session_factory=DEFAULT_SESSION_FACTORY):
+    def __init__(self, session_factory: SessionFactory):
         self.session_factory = session_factory
 
     def __enter__(self):
-        self.session = self.session_factory()  # type: Session
+        self.session = self.session_factory()
         self.init_repositories(repository.SqlAlchemyRepository(self.session))
         return super().__enter__()
 
