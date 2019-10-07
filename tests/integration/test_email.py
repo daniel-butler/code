@@ -2,23 +2,21 @@
 import uuid
 import pytest
 import requests
-from allocation import config, commands, messagebus, notifications, unit_of_work
+from allocation import bootstrap, config, commands, messagebus, notifications, unit_of_work
 
 cfg = config.get_email_host_and_port()
 
 @pytest.fixture
 def bus(sqlite_session_factory):
-    uow = unit_of_work.SqlAlchemyUnitOfWork(sqlite_session_factory)
-    bus = messagebus.MessageBus(
-        uow=uow,
+    return bootstrap.bootstrap(
+        start_orm=lambda: None,
+        session_factory=sqlite_session_factory,
         notifications=notifications.EmailNotifications(
             smtp_host=cfg['host'],
             port=cfg['port'],
         ),
         publish=lambda *_, **__: None
     )
-    uow.set_bus(bus)
-    return bus
 
 
 def random_sku():

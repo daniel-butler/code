@@ -6,11 +6,11 @@ from pathlib import Path
 
 import pytest
 import redis
-from redis.exceptions import RedisError
 import requests
 from requests.exceptions import RequestException
-from sqlalchemy import create_engine
+from redis.exceptions import RedisError
 from sqlalchemy.exc import OperationalError
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, clear_mappers
 
 from allocation.orm import metadata, start_mappers
@@ -94,4 +94,3 @@ def restart_redis_pubsub():
         print('skipping restart, assumes running in container')
         return
     subprocess.run(['docker-compose', 'restart', '-t', '0', 'redis_pubsub'])
-
