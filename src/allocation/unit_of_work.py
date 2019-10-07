@@ -1,10 +1,14 @@
 # pylint: disable=attribute-defined-outside-init
+from __future__ import annotations
 import abc
+from typing import TYPE_CHECKING
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
 
-from allocation import config, messagebus, repository
+from allocation import config, repository
+if TYPE_CHECKING:
+    from allocation import messagebus
 
 
 
@@ -24,7 +28,7 @@ class AbstractUnitOfWork(abc.ABC):
         for product in self.products.seen:
             while product.events:
                 event = product.events.pop(0)
-                messagebus.handle(event, uow=self)
+                self.bus.handle(event)
 
     @abc.abstractmethod
     def _commit(self):
@@ -36,6 +40,9 @@ class AbstractUnitOfWork(abc.ABC):
 
     def init_repositories(self, products: repository.AbstractRepository):
         self._products = products
+
+    def set_bus(self, bus: messagebus.MessageBus):
+        self.bus = bus
 
     @property
     def products(self) -> repository.AbstractRepository:

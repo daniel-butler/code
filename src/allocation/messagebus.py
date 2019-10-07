@@ -20,7 +20,7 @@ class MessageBus:
             publish: Callable,
     ):
         self.uow = uow
-        self.dependencies = dict(uow=uow, send_mail=send_mail, publish=publish)
+        self.dependencies = dict(uow=uow, notifications=notifications, publish=publish)
 
     def handle(self, message: Message):
         if isinstance(message, events.Event):
