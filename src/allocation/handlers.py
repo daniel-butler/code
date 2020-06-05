@@ -25,8 +25,8 @@ def add_batch(
 def allocate(
         cmd: commands.Allocate, uow: unit_of_work.AbstractUnitOfWork
 ):
-    line = OrderLine(cmd.orderid, cmd.sku, cmd.qty)
     with uow:
+        line = OrderLine(cmd.orderid, cmd.sku, cmd.qty)
         product = uow.products.get(sku=line.sku)
         if product is None:
             raise exceptions.InvalidSku(f'Invalid sku {line.sku}')
